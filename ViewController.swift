@@ -12,9 +12,10 @@ class ViewController: UIViewController {
     //MARK: Properties
     private var imageView: UIImageView!
     private var getImageButton: UIButton!
+    private var image: UIImage!
     
     private lazy var guide = self.view.layoutMarginsGuide
-    
+    private let networkManager = NetworkManager()
     
     //MARK: - View Life Circle
     override func viewDidLoad() {
@@ -62,6 +63,25 @@ class ViewController: UIViewController {
             getImageButton.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
             getImageButton.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30)
         ])
+        
+        getImageButton.addTarget(self, action: #selector(getImageButtonTapped), for: .touchUpInside)
+    }
+    
+    //MARK: - Actions
+    @objc
+    private func getImageButtonTapped() {
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.networkManager.getImage { image in
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+                
+            }
+            
+            
+        }
+        
     }
 }
 
